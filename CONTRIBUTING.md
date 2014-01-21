@@ -79,7 +79,7 @@ Fill in the following fields for your Cask:
 | `version`          | application version; determines the directory structure in the Caskroom
 | `sha1`             | SHA-1 Checksum of the file; checked when the file is downloaded to prevent any funny business (can be omitted with `no_checksum`)
 | __artifact info__  | information about artifacts inside the Cask (can be specified multiple times)
-| `link`             | relative path to a file that should be linked into the `Applications` folder on installation
+| `link`             | relative path to a file that should be linked into the `Applications` folder on installation (see __Link Details__ for more information)
 | `install`          | relative path to `pkg` that should be run to install the application
 | `uninstall`        | indicates what commands/scripts must be run to uninstall a pkg-based application (see __Uninstall Support__ for more information)
 
@@ -128,6 +128,22 @@ If the "latest" URL does not point to a valid file for a Mac app, then we fall b
 ```
 http://downloads.sourceforge.net/sourceforge/$PROJECTNAME/$FILENAME.$EXT
 ```
+
+### Link Details
+
+In most cases, a relative path to a file that should be linked into the `Applications` folder on installation is enough. But if you want to have a symlink with different name (to avoid conflicts) you can override using :target option
+
+```ruby
+class Alfred < Cask
+  url 'http://cachefly.alfredapp.com/Alfred_2.1.1_227.zip'
+  homepage 'http://www.alfredapp.com/'
+  version '2.1.1_227'
+  sha1 'db28d2a5c655a4611c780c3f46252530118ddd9d'
+  link 'Alfred 2.app', :target => 'AnotherName.app'
+  link 'Alfred 2.app/Contents/Preferences/Alfred Preferences.app'
+end
+```
+
 
 ### Naming Casks
 

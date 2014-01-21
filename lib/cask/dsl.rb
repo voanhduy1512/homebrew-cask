@@ -66,8 +66,8 @@ module Cask::DSL
     ]
 
     ARTIFACT_TYPES.each do |type|
-      define_method(type) do |*args|
-        artifacts[type].merge(args)
+      define_method(type) do |args|
+        artifacts[type] << args
       end
     end
 

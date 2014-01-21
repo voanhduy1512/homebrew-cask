@@ -12,15 +12,22 @@ class Cask::Artifact::Symlinked < Cask::Artifact::Base
   end
 
   def link(artifact_relative_path)
-    source = @cask.destination_path.join(artifact_relative_path)
-    target = Cask.send(self.class.artifact_dirmethod).join(source.basename)
+    source_string, target_hash = artifact_relative_path
+    source = @cask.destination_path.join(source_string)
+    target = Cask.send(self.class.artifact_dirmethod).join(target_hash ? target_hash[:target] : source.basename)
     return unless preflight_checks(source, target)
     ohai "#{self.class.link_type_english_name}ing #{self.class.artifact_english_name} '#{source.basename}' to '#{target}'"
     create_filesystem_link(source, target)
   end
 
   def unlink(artifact_relative_path)
-    linked_path = Cask.send(self.class.artifact_dirmethod).join(Pathname(artifact_relative_path).basename)
+
+    source_string, target_hash = artifact_relative_path
+
+    source = @cask.destination_path.join(source_string)
+    target = Cask.send(self.class.artifact_dirmethod).join(target_hash ? target_hash[:target] : source.basename)
+
+    linked_path = Cask.send(self.class.artifact_dirmethod).join(Pathname(target).basename)
     if linked_path.exist? && self.class.islink?(linked_path)
       ohai "Removing #{self.class.artifact_english_name} #{self.class.link_type_english_name.downcase}: '#{linked_path}'"
       linked_path.delete
