@@ -50,24 +50,33 @@ module Cask::DSL
     end
 
     ARTIFACT_TYPES = [
-      :install,
       :link,
-      :nested_container,
       :prefpane,
       :qlplugin,
       :font,
-      :uninstall,
       :widget,
       :service,
       :colorpicker,
       :binary,
       :caskroom_only,
-      :input_method,
+      :input_method
+    ]
+
+    SPECIAL_ARTIFACT_TYPES = [
+      :install,
+      :nested_container,
+      :uninstall
     ]
 
     ARTIFACT_TYPES.each do |type|
       define_method(type) do |args|
         artifacts[type] << args
+      end
+    end
+
+    SPECIAL_ARTIFACT_TYPES.each do |type|
+      define_method(type) do |*args|
+        artifacts[type].merge(args)
       end
     end
 
